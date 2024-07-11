@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
+use App\Models\Comment;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -57,17 +58,40 @@ class PostController extends Controller
         return redirect()->back();
     }
 
-    public function delete($id){
-        $posts=Post::find($id);
-        $posts->delete();
-        return redirect(route('dashboard'));
+    public function delete($id)
+    {
+        $post = Post::find($id);
+
+        if ($post) {
+            $post->delete();
+            return redirect()->route('dashboard')->with('success', 'Post deleted successfully.');
+        } else {
+            return redirect()->route('dashboard')->with('error', 'Post not found.');
+        }
     }
-    public function sieve(Request $request){
+
+    public function filter(Request $request){
         $posts =Post::query();
-        if ($request->has('date')&& $request->date!=null){
-            $posts->whereDate('created_at', $request->date);
+        if ($request->has('startdate')&& $request->startdate!=null){
+            $posts->whereDate('created_at', $request->startdate);
         }
             $posts= $posts->paginate(5);
         return view('admin.blog.filter', compact('posts'));
     }
+
+    // public function more(Request $request, $id)
+    // {
+    // //  $posts = Post::findOrFail($id);
+    //     $posts = Post::with('comments')->findOrFail($id);
+    //     return view('admin.blog.show', compact('posts'));
+    // }
+
+    public function more($id)
+    {
+        $comments= Comment::all();
+        $post = Post::with('comments')->findOrFail($id);
+        $relatedPosts = Post::relatedPosts($post)->take(5)->get();
+        return view('admin.blog.show', compact('post','relatedPosts'));
+    }
+
 }

@@ -14,6 +14,18 @@ class Post extends Model
         'author',
         'user_id',
     ];
+    public function scopeRelatedPosts($query, $post)
+    {
+        // Split the title into words
+        $words = explode(' ', $post->title);
+
+        // Search for posts containing any of these words in their title
+        return $query->where(function ($q) use ($words) {
+            foreach ($words as $word) {
+                $q->orWhere('title', 'LIKE', '%' . $word . '%');
+            }
+        })->where('id', '!=', $post->id);
+    }
 
     // this post belongs to a user
     public function user(){

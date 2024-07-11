@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{ProfileController,ContactController,BlogController,CommentController,AboutController,DashboardController,UserController,LoginController,HomeController,};
-use App\Http\Controllers\admin\{AuthController,InquiryController,AdminProfileController,UsermanageController,RegisteredUserController,PostController};
+use App\Http\Controllers\admin\{AuthController,FilterController,InquiryController,AdminProfileController,UsermanageController,RegisteredUserController,PostController};
 
 
 
@@ -18,9 +18,7 @@ Route::post('/user/{id}/enable', [UserController::class, 'enable'])->name('user.
 Route::post('/user/{id}/disable', [UserController::class, 'disable'])->name('user.disable');
 
 //users....
-Route::get('/userdashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('userdashboard');
+Route::get('/userdashboard', function () {return view('dashboard');})->middleware(['auth', 'verified'])->name('userdashboard');
 
 Route::get('/contact', function () {return view('contact');})->name('contact.show');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
@@ -28,14 +26,14 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 Route::middleware('auth')->group(function () {
 
 
-    // Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
-    // Route::post('login', [LoginController::class, 'login']);
+// Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
+// Route::post('login', [LoginController::class, 'login']);
 
-    Route::post('/post/{id}/comment', [CommentController::class, 'store'])->name('comment.store');
+Route::post('/post/{id}/comment', [CommentController::class, 'store'])->name('comment.store');
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 require __DIR__.'/auth.php';
@@ -50,13 +48,20 @@ Route::get('/admin/logout', [AdminProfileController::class,'logout'])->name('log
 Route::get('/admin/users', [UsermanageController::class,'index'])->name('users.index');
 Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
 Route::post('register', [RegisteredUserController::class, 'store']);
-    Route::get('/admin/post', [PostController::class, 'show'])->name('post.show');
-    Route::post('/post/store', [PostController::class, 'store'])->name('post.store');
-    Route::get('/post/{id}/edit', [PostController::class, 'edit'])->name('post.edit');
-    Route::post('/post/{id}', [PostController::class, 'update'])->name('post.update');
-    Route::get('/filter', [PostController::class, 'sieve'])->name('filter.show');
-    Route::get('/post/{id}', [PostController::class, 'delete'])->name('post.delete');
-    Route::get('/adsearch', [BlogController::class, 'adsearch'])->name('adsearch');
-    Route::get('/inquiry', [InquiryController::class, 'show'])->name('inquiry.show');
-    //admin
+Route::get('/admin/post', [PostController::class, 'show'])->name('post.show');
+Route::post('/post/store', [PostController::class, 'store'])->name('post.store');
+Route::get('/post/edit/{id}', [PostController::class, 'edit'])->name('post.edit');
+Route::get('/edit/{id}', [PostController::class, 'edit'])->name('post.edit');
+Route::post('/post/{id}', [PostController::class, 'update'])->name('post.update');
+Route::post('/post/{id}', [PostController::class, 'update'])->name('post.update');
+Route::get('/post/{id}/more', [PostController::class, 'more'])->name('post.more');
+Route::get('/post/{id}', [PostController::class, 'delete'])->name('post.delete');
+Route::get('/adsearch', [BlogController::class, 'adsearch'])->name('adsearch');
+Route::get('/inquiry', [InquiryController::class, 'show'])->name('inquiry.show');
+Route::get('/filter',[FilterController::class, 'index'])->name('filter');
+Route::get('/filterinRange',[FilterController::class, 'filter'])->name('filter.show');
+
+Route::get('/api/posts/{id}', [PostController::class, 'getPost'])->name('api.posts.getPost');
+Route::post('/posts/{id}', [PostController::class, 'update'])->name('posts.update');
+//admin
 

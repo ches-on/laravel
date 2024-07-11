@@ -149,7 +149,7 @@
           <!-- Default box -->
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title"></h3>
+              <h3 class="card-title"> Latest</h3>
 
               <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -161,7 +161,36 @@
               </div>
             </div>
             <div class="card-body">
+                  <table class="table table-bordered">
+              <thead>
+                  <tr>
 
+                      <th>Title</th>
+                      <th>Created at</th>
+                      <th>Author</th>
+                      <th>Posted By</th>
+                      <th>Action</th>
+                  </tr>
+              </thead>
+              <tbody>
+                @foreach ($posts as $post)
+                      <tr>
+                          <td>{{ $post->title }}</td>
+                          <td>{{ $post->created_at->format('m,y')}}</td>
+                          <td>{{$post->author}}</td>
+                          <td>{{ $post->user->name}}</td>
+                          <td>
+
+                            <a href="#" data-toggle="modal" data-target="#editFormModal">
+                              <i class="fas fa-edit" style="color:green"></i>
+                            </a>
+
+                            <a href="{{route('post.delete', $post->id)}}"  class="fa fa-trash" style="color:red; margin-left:5%"></a></i>
+                            <a href="{{route('post.more',$post->id)}}" class="far fa-arrow-alt-circle-right"></a>
+                          </td>
+                  @endforeach
+              </tbody>
+          </table>
             </div>
 
             <div class="card-footer">
@@ -174,6 +203,39 @@
       </div>
     </div>
   </section>
+  {{-- editing form --}}
+<div class="modal fade" id="editFormModal" tabindex="-1" role="dialog" aria-labelledby="editFormModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editFormModalLabel">Edit Post</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="{{ route('post.update', $post->id) }}">
+          @csrf
+          @method('POST')
+          <div class="mb-3">
+            <label for="title" class="form-label">{{ __('Title') }}</label>
+            <input type="text" class="form-control" id="title" name="title" required value="{{ $post->title }}">
+          </div>
+          <div class="mb-3">
+            <label for="content" class="form-label">{{ __('Content') }}</label>
+            <textarea class="form-control" id="contents" name="content" rows="10" required>{!! $post->content !!}</textarea>
+          </div>
+          <div class="mb-3">
+            <label for="author" class="form-label">{{ __('Author') }}</label>
+            <input type="text" class="form-control" id="author" name="author" required value="{{ $post->author }}">
+          </div>
+          <button type="submit" class="btn btn-primary rounded">{{ __('Submit') }}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 @endsection
 
 

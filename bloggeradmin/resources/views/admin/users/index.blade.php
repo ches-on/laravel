@@ -27,7 +27,7 @@
         </div>
       </li>
     </ul>
-  </nav>
+</nav>
 
 @endsection
 @section('content-header')
@@ -76,11 +76,12 @@
                   </button>
 
                 </div> <br>
-                <button type="button" class="btn btn-primary ml-20%" data-toggle="modal" data-target="#registerModal" style="">
-                  Add user
-               </button>
+
               </div>
               <div class="card-body">
+                  <button type="button" class="btn btn-success float-sm-right mb-1 mt-n3" data-toggle="modal" data-target="#registerModal" style="">
+                  Add user
+               </button>
                 <table class="table table-bordered">
                   <thead>
                       <tr>
